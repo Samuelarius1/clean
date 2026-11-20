@@ -1,169 +1,72 @@
-<<<<<<< HEAD
-# React + TypeScript + Vite
+# Faith’s Walk CleanPro
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript + Vite public website with a PHP REST API and MySQL persistence. The API is the source of service listings, bookings, contact submissions and admin dashboard records; the frontend does not generate database success states or sample records.
 
-Currently, two official plugins are available:
+## Requirements
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js 20+ and pnpm (or npm)
+- XAMPP with Apache, PHP 8.1+ and MySQL/MariaDB
+- PHP extensions: `pdo_mysql`, `mbstring`
 
-## React Compiler
+## Frontend setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm install
+cp .env.example .env.local
+pnpm dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Vite runs at `http://localhost:5173`. The central API client reads `VITE_API_BASE_URL` (default `http://localhost/faiths-CleanPro/backend/public/api`). Set this to the actual URL of the API directory under your XAMPP `htdocs` folder. For a different frontend origin, update the backend `FRONTEND_ORIGIN` to exactly match it.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## XAMPP and database setup
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-=======
-# faithCleanPro
+1. Copy or clone this repository into `C:\xampp\htdocs\faiths-CleanPro` (Windows) or the equivalent XAMPP `htdocs` directory.
+2. Start Apache and MySQL from the XAMPP control panel. Enable `mod_rewrite` and allow `.htaccess` overrides for the API directory.
+3. In phpMyAdmin or the MySQL client, import `backend/database/schema.sql`. It creates the `faiths_cleanpro` database and empty application tables. No demonstration services or customers are inserted.
+4. Copy `backend/.env.example` to `backend/.env`, then set `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `FRONTEND_ORIGIN`, and `ADMIN_EMAIL`. Keep this file private and out of version control. For local XAMPP, the default database user is often `root` with an empty password; configure a password for production.
+5. Make `backend/uploads` writable by the web server only if you later enable file uploads. The current API intentionally does not accept uploads.
+6. Ensure the API responds at `http://localhost/faiths-CleanPro/backend/public/api/services`. With an empty database it returns an empty list, which the website presents as an honest empty state.
 
+SQL commands if importing manually:
 
-
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-* [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gitlab.com/AlvinRonald123/faithcleanpro.git
-git branch -M main
-git push -uf origin main
+```sql
+CREATE DATABASE faiths_cleanpro CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-## Integrate with your tools
+Then select that database and execute `backend/database/schema.sql` (the schema also safely creates/selects the database).
 
-* [Set up project integrations](https://gitlab.com/AlvinRonald123/faithcleanpro/-/settings/integrations)
+## Initial admin account
 
-## Collaborate with your team
+Only `samuelarius437@gmail.com` is allowed to authenticate. The PHP API verifies this on the server and also checks the active `admin_users` row and password hash. Create the account once from a trusted terminal in the repository root:
 
-* [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+```bash
+php backend/scripts/create-admin.php
+```
 
-## Test and Deploy
+The script prompts for a display name and a new password (12 characters minimum), hashes it with PHP `password_hash`, and does not print or store the plaintext password. The requested `12345678` password is deliberately not accepted because it is short and guessable; set a unique, longer password instead. Do not expose the setup script through a web route. There is no public registration route.
 
-Use the built-in continuous integration in GitLab.
+Admin sessions use HTTP-only, SameSite=Strict cookies, idle expiration, session ID rotation at login, CSRF checks on authenticated requests and a server-side email allowlist. Use HTTPS in production so session cookies are secure.
 
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+## API
 
-***
+All responses use `{ "success": boolean, "message": string, "data": any }`.
 
-# Editing this README
+- `GET /services` and `GET /services/{slug}` — active service catalogue and details
+- `POST /bookings` — validate and persist a booking request
+- `POST /contact` — validate and persist a contact request
+- `POST /admin/login` — allowlisted admin login
+- `GET /admin/dashboard` — authenticated counts and recent bookings; requires session cookie and `X-CSRF-Token`
+- `GET /admin/services`, `POST /admin/services`, `PATCH /admin/services/{id}` — administer service visibility and add services
+- `PATCH /admin/bookings/{id}/status` — update booking workflow status
+- `GET /admin/messages`, `PATCH /admin/messages/{id}/status` — review and update incoming messages
+- `POST /admin/logout` — authenticated logout; requires `X-CSRF-Token`
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+All database access uses PDO prepared statements. Configure Apache so the `.htaccess` file is honored. Never expose PHP error details to API clients; server-side errors go to the PHP error log.
 
-## Suggestions for a good README
+## Implementation scope and production checklist
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+The public site includes responsive Home, About, Services, Service detail, Booking, Contact and admin routes. Service listings/details, booking requests, contact messages, admin metrics, service creation/visibility and booking/message status updates use the PHP API and MySQL. Empty database tables are shown as empty states; no customer, booking, service, testimonial or performance figures are seeded as examples.
 
-## Name
-Choose a self-explaining name for your project.
+The supplied specification also requests a customer account system, booking availability and reference lookup, gallery and testimonial management, editable business content, FAQs, CSV/report exports, image uploads and related admin modules. These are not represented as working features in this build and must be completed before calling the entire requested platform production-ready. PHP/XAMPP is not installed in the v0 workspace, so run the backend under XAMPP and validate `backend/database/schema.sql`, API routes and admin flows there before deployment. Configure HTTPS, server-side rate limiting, backups, mail delivery and production database credentials before handling real customer data.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
->>>>>>> 3596d24b67b4c46bd1f065516b3f1e05f9110326
+The existing repository may contain prior experimental files; the Vite entry point is `src/main.tsx` and the PHP application is isolated under `backend/`.

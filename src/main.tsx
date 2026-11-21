@@ -5,6 +5,9 @@ import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import App from './App'
 import './styles/global.css'
 import './styles/admin.css'
+import './styles/customer.css'
+import './styles/admin-platform.css'
+import './styles/public-content.css'
 
 const theme = createTheme({
   palette: { primary: { main: '#052361' }, secondary: { main: '#E923DA' }, background: { default: '#FFFFFF', paper: '#FFFFFF' }, text: { primary: '#17243B', secondary: '#68758B' } },

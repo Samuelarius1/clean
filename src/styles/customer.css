@@ -1,0 +1,21 @@
+.account-auth-page .form-panel,.lookup-result,.customer-booking-card{border:1px solid var(--line);border-radius:20px;background:var(--paper)}
+.account-auth-page .privacy-note a,.form-aside a{color:var(--green);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.customer-page{width:min(100% - 44px,1080px);margin:0 auto;padding:clamp(56px,9vw,112px) 0;min-height:55vh;color:var(--ink)}
+.customer-page h1{font:600 clamp(38px,6vw,72px)/1.05 Manrope,sans-serif;letter-spacing:-.055em;margin:18px 0}
+.customer-page h1 em{color:var(--clay);font-style:normal}
+.customer-page>p{max-width:560px;color:var(--muted);line-height:1.7}
+.customer-page h2{margin:48px 0 20px;font:600 24px Manrope,sans-serif}
+.account-heading{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.customer-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.customer-booking-list{display:grid;gap:12px}
+.customer-booking-card{padding:22px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+.customer-booking-card h3,.lookup-result h3{font:600 19px Manrope,sans-serif;margin:8px 0}
+.customer-booking-card p,.lookup-result p{color:var(--muted);margin:0}
+.customer-booking-card>svg{color:var(--green);flex:none}
+.customer-page .empty-state{border-radius:20px;padding:36px;background:var(--sage)}
+.booking-reference{margin:24px 0;padding:16px 18px;border:1px solid var(--line);border-radius:14px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--sage)}
+.booking-reference strong{font:700 16px 'DM Sans',sans-serif;letter-spacing:.09em;overflow-wrap:anywhere}
+.booking-reference button{display:flex;align-items:center;gap:8px;border:0;background:transparent;color:var(--green);font-weight:700;flex:none}
+.lookup-result{padding:20px;margin-top:24px}
+.lookup-result .eyebrow{text-transform:capitalize}
+@media(max-width:640px){.account-heading{align-items:flex-start;flex-direction:column}.customer-booking-card{padding:17px}.booking-reference{align-items:flex-start;flex-direction:column}}

@@ -15,6 +15,26 @@ $contentType=(string)($_SERVER['CONTENT_TYPE']??'');$input=str_contains($content
 
 try {
   $db = Database::connection();
+  if ($method === 'POST' && $path === 'analytics/track') {
+    Http::assertSameOrigin();RateLimiter::enforce($db,'analytics-track',240);
+    $page=Http::string($input,'path',240);
+    $visitor=(string)($input['visitor_id']??'');
+    if(!preg_match('#^/(?!/)[a-zA-Z0-9/_-]*$#',$page)||!preg_match('/^[a-f0-9-]{36}$/i',$visitor))Http::fail(422,'Invalid visit data.');
+    $referrer=(string)($input['referrer']??'');$host=null;
+    if($referrer!==''&&filter_var($referrer,FILTER_VALIDATE_URL)){$parsed=parse_url($referrer);$hosts=[strtolower((string)(parse_url((string)(getenv('FRONTEND_ORIGIN')?:'http://localhost:5173'),PHP_URL_HOST)?:'')),strtolower((string)(parse_url((string)($_SERVER['HTTP_ORIGIN']??''),PHP_URL_HOST)?:'')),strtolower((string)($_SERVER['HTTP_HOST']??''))];if(isset($parsed['host'])&&!in_array(strtolower((string)$parsed['host']),$hosts,true))$host=substr(strtolower((string)$parsed['host']),0,190);}
+    $agent=strtolower((string)($_SERVER['HTTP_USER_AGENT']??''));$device=str_contains($agent,'ipad')||str_contains($agent,'tablet')?'tablet':(preg_match('/android|iphone|ipod|mobile/',$agent)?'mobile':($agent!==''?'desktop':'unknown'));
+    $stmt=$db->prepare('INSERT INTO visit_events (visitor_hash,page_path,referrer_host,device_type) VALUES (?,?,?,?)');$stmt->execute([hash('sha256',$visitor),$page,$host,$device]);
+    Http::respond(['success'=>true,'message'=>'Visit recorded','data'=>null],202);
+  }
+  if ($method === 'GET' && $path === 'admin/analytics') {
+    Auth::requireAdmin();Auth::requireCsrf();$days=filter_var($_GET['days']??30,FILTER_VALIDATE_INT);if(!in_array($days,[7,30,90],true))Http::fail(422,'Choose a supported reporting period.');
+    $start=(new DateTimeImmutable('today'))->modify('-'.($days-1).' days')->format('Y-m-d 00:00:00');
+    $summary=$db->prepare('SELECT COUNT(*) AS total_views,COUNT(DISTINCT visitor_hash) AS unique_visitors FROM visit_events WHERE visited_at>=?');$summary->execute([$start]);$totals=$summary->fetch()?:['total_views'=>0,'unique_visitors'=>0];
+    $daily=$db->prepare('SELECT DATE(visited_at) AS date,COUNT(*) AS views FROM visit_events WHERE visited_at>=? GROUP BY DATE(visited_at) ORDER BY date');$daily->execute([$start]);
+    $pages=$db->prepare('SELECT page_path AS path,COUNT(*) AS views FROM visit_events WHERE visited_at>=? GROUP BY page_path ORDER BY views DESC LIMIT 8');$pages->execute([$start]);
+    $referrers=$db->prepare('SELECT referrer_host AS host,COUNT(*) AS views FROM visit_events WHERE visited_at>=? AND referrer_host IS NOT NULL GROUP BY referrer_host ORDER BY views DESC LIMIT 8');$referrers->execute([$start]);
+    Http::respond(['success'=>true,'message'=>'Analytics loaded','data'=>['total_views'=>(int)$totals['total_views'],'unique_visitors'=>(int)$totals['unique_visitors'],'daily'=>array_map(static fn(array $row):array=>['date'=>(string)$row['date'],'views'=>(int)$row['views']],$daily->fetchAll()),'top_pages'=>array_map(static fn(array $row):array=>['path'=>(string)$row['path'],'views'=>(int)$row['views']],$pages->fetchAll()),'referrers'=>array_map(static fn(array $row):array=>['host'=>(string)$row['host'],'views'=>(int)$row['views']],$referrers->fetchAll())]]);
+  }
   if(PlatformController::dispatch($db,$method,$path,$input))return;
   if ($method === 'GET' && $path === 'customer/session') {
     Auth::requireCustomer();Http::respond(['success'=>true,'message'=>'Session active','data'=>['csrf'=>$_SESSION['csrf'],'name'=>$_SESSION['customer_name']]]);

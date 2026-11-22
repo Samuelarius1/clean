@@ -9,10 +9,11 @@ import GalleryManager from './GalleryManager'
 import TestimonialManager from './TestimonialManager'
 import ReportsManager from './ReportsManager'
 import CustomerManager from './CustomerManager'
+import AnalyticsManager from './AnalyticsManager'
 
 type Dashboard = Awaited<ReturnType<typeof adminApi.dashboard>>
-type Tab = 'bookings' | 'services' | 'customers' | 'messages' | 'availability' | 'gallery' | 'testimonials' | 'faqs' | 'content' | 'reports'
-const tabs: Tab[] = ['bookings','services','customers','messages','availability','gallery','testimonials','faqs','content','reports']
+type Tab = 'bookings' | 'services' | 'customers' | 'messages' | 'availability' | 'gallery' | 'testimonials' | 'faqs' | 'content' | 'reports' | 'analytics'
+const tabs: Tab[] = ['bookings','services','customers','messages','availability','gallery','testimonials','faqs','content','reports','analytics']
 
 export default function AdminPage() {
   const [csrf, setCsrf] = useState('')
@@ -87,5 +88,6 @@ export default function AdminPage() {
     {tab==='faqs' && <FaqManager csrf={csrf}/>}
     {tab==='content' && <ContentManager csrf={csrf}/>}
     {tab==='reports' && <ReportsManager csrf={csrf}/>}
+    {tab==='analytics' && <AnalyticsManager csrf={csrf}/>}
   </section>
 }

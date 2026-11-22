@@ -80,6 +80,7 @@ export const adminApi = {
   moderateTestimonial: (csrf: string, id: number, approved: boolean, published: boolean) => api<null>(`admin/testimonials/${id}`, { method: 'PATCH', headers: { 'X-CSRF-Token': csrf }, body: JSON.stringify({ approved, published }) }),
   content: (csrf: string) => api<Array<{ setting_key: string; setting_value: string }>>('admin/content', { headers: { 'X-CSRF-Token': csrf } }),
   saveContent: (csrf: string, content: Record<string, string>) => api<null>('admin/content', { method: 'PUT', headers: { 'X-CSRF-Token': csrf }, body: JSON.stringify(content) }),
+  analytics: (csrf: string, days: number) => api<{ total_views: number; unique_visitors: number; daily: Array<{ date: string; views: number }>; top_pages: Array<{ path: string; views: number }>; referrers: Array<{ host: string; views: number }> }>(`admin/analytics?days=${days}`, { headers: { 'X-CSRF-Token': csrf } }),
   downloadBookings: async (csrf: string, from: string, to: string) => {
     const response = await fetch(`${API_BASE}/admin/reports/bookings.csv?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`, { credentials: 'include', headers: { 'X-CSRF-Token': csrf } })
     if (!response.ok) throw new ApiError('Could not export the booking report.', response.status)

@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink, Outlet } from 'react-router-dom'
+import { motion, useReducedMotion } from 'framer-motion'
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { ArrowUpRight, Menu, Moon, Sun, X } from 'lucide-react'
 import { IconButton } from '@mui/material'
 
 export function SiteLayout() {
+  const location = useLocation()
+  const reduceMotion = useReducedMotion()
   const [open, setOpen] = useState(false)
   const [dark, setDark] = useState(() => {
     try {
@@ -32,7 +35,14 @@ export function SiteLayout() {
       </nav>
       <div className="header-actions"><IconButton onClick={toggleTheme} aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'} size="small" className="theme-toggle">{dark ? <Sun size={17} /> : <Moon size={17} />}</IconButton><Link className="button button-dark header-book" to="/booking">Request a clean <ArrowUpRight size={16} /></Link><button className="mobile-toggle" type="button" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="primary-navigation" aria-label={open ? 'Close menu' : 'Open menu'}>{open ? <X /> : <Menu />}</button></div>
     </header>
-    <main><Outlet /></main>
+    <motion.main
+      key={location.pathname}
+      initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: reduceMotion ? 0 : 0.32, ease: 'easeOut' }}
+    >
+      <Outlet />
+    </motion.main>
     <footer className="site-footer"><div className="footer-top"><div><Link className="brand footer-brand" to="/"><img src="/logo.png" alt="" /><span>faith&apos;s walk <b>cleanpro</b></span></Link><p>Thoughtful cleaning for the places<br />where life happens.</p></div><div className="footer-links"><div><span className="eyebrow">EXPLORE</span><Link to="/services">Our services</Link><Link to="/about">Our story</Link><Link to="/contact">Get in touch</Link><Link to="/gallery">Gallery</Link><Link to="/faq">FAQs</Link></div><div><span className="eyebrow">GET STARTED</span><Link to="/booking">Request a clean</Link><Link to="/account">My account</Link><Link to="/booking/lookup">Booking status</Link><Link to="/admin">Team sign in</Link></div></div></div><div className="footer-bottom"><span>© {new Date().getFullYear()} Faith&apos;s Walk CleanPro</span><span>Made with care, for a little more breathing room.</span></div></footer>
   </div>
 }

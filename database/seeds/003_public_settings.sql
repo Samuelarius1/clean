@@ -1,0 +1,15 @@
+INSERT IGNORE INTO site_content (content_key, content_value) VALUES
+('business_name', 'Faith’s Walk CleanPro'),
+('home_hero_eyebrow', 'PROFESSIONAL CLEANING, PERSONAL CARE'),
+('home_hero_title', 'A cleaner space.'),
+('home_hero_accent', 'A better feeling.'),
+('home_hero_description', 'Thoughtful home and workplace cleaning, shaped around the way you live and work.'),
+('about_intro_title', 'Good cleaning starts with good care.'),
+('about_intro_body', 'Thoughtful cleaning helps make the spaces where life and work happen feel more comfortable.'),
+('contact_email', ''),
+('contact_phone', ''),
+('business_address', ''),
+('whatsapp_url', ''),
+('instagram_url', ''),
+('facebook_url', ''),
+('booking_lead_days', '0');

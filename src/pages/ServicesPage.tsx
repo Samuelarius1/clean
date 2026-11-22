@@ -1,0 +1,16 @@
+import { useState } from 'react'
+import useSWR from 'swr'
+import { motion } from 'framer-motion'
+import { ArrowUpRight, Search } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Reveal } from '../components/Reveal'
+import { getServices } from '../services/api'
+
+export function ServicesPage() {
+  const { data: services = [], error, isLoading: loading } = useSWR('public-services', getServices)
+  const [query, setQuery] = useState('')
+  const [category, setCategory] = useState('All services')
+  const categories = ['All services', ...new Set(services.map(service => service.category).filter(Boolean))]
+  const visible = services.filter(service => (category === 'All services' || service.category === category) && `${service.name} ${service.summary} ${service.description}`.toLowerCase().includes(query.toLowerCase()))
+  return <main className="subpage"><section className="subpage-hero"><div className="wrap"><Reveal><span className="eyebrow">A CLEAN FOR EVERY KIND OF SPACE</span><h1>Good clean.<br /><em>Good feeling.</em></h1><p>Explore our services and find a thoughtful reset for the place you call yours.</p></Reveal></div></section><section className="section"><div className="wrap"><div className="filter-row"><label className="search-box"><Search size={17} /><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Find a service" aria-label="Search cleaning services" /></label><div className="category-filters" aria-label="Service categories">{categories.map(item => <button key={item} onClick={() => setCategory(item)} className={category === item ? 'filter-chip active' : 'filter-chip'}>{item}</button>)}</div></div>{loading ? <div className="service-grid">{[1, 2, 3].map(item => <div className="service-skeleton" key={item} />)}</div> : error ? <p className="empty-state">We couldn’t connect to the service menu just now. Please try again in a moment, or <Link to="/contact">contact our team</Link>.</p> : visible.length ? <div className="service-grid all-services-grid">{visible.map((service, index) => <motion.article className="service-card" key={service.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }} whileHover={{ y: -7 }}><Link to={`/services/${service.slug}`} className="service-photo"><img src={service.image_url || 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=900&q=85'} alt={`${service.name} cleaning`} loading="lazy" /><span className="photo-arrow"><ArrowUpRight size={17} /></span></Link><div className="service-card-body"><span className="service-category">{service.category || 'CLEANING SERVICE'}</span><h3>{service.name}</h3><p>{service.summary || service.description}</p><div className="service-card-bottom"><span>{service.price_from ? `From $${Number(service.price_from).toFixed(0)}` : 'Personalized quote'}</span><Link to={`/services/${service.slug}`}>Details <ArrowUpRight size={14} /></Link></div></div></motion.article>)}</div> : <p className="empty-state">{services.length ? 'No services match that search. Try another term.' : 'Our service menu is being updated. Contact us to find a fit for your space.'}</p>}</div></section></main>
+}

@@ -1,0 +1,1 @@
+-- Intentionally no sample FAQs are inserted. Add verified answers through the owner dashboard.

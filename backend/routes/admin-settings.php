@@ -13,7 +13,7 @@ if ($method === 'GET') {
     success($result);
 }
 if ($method !== 'POST') { header('Allow: GET, POST, OPTIONS'); fail_request(405, 'Method not allowed.'); }
-$admin = require_admin_csrf();
+$admin = require_admin_role_csrf('admin');
 $data = request_data();
 $values = $data['settings'] ?? null;
 if (!is_array($values)) fail_request(422, 'Settings are required.');

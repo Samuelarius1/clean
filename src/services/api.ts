@@ -86,10 +86,11 @@ export async function customerLogout() {
   customerCsrfToken = ''
 }
 
-export type AdminSession = { admin: { id: number; email: string; name: string }; csrfToken: string }
+export type AdminSession = { admin: { id: number; email: string; name: string; role: 'admin' | 'manager' }; csrfToken: string }
 export type AnalyticsSummary = { days: number; totals: { page_views: number; unique_visitors: number }; bookings: { total: number; pending: number; confirmed: number; completed: number }; customerAccounts: number; daily: Array<{ date: string; page_views: number; unique_visitors: number }>; topPages: Array<{ page_path: string; page_views: number; unique_visitors: number }> }
 export type AdminBooking = CustomerBooking & { id: number; reference: string; customer_name: string; customer_email: string; customer_phone: string; service_name: string; quoted_amount: number | null }
 export type BookingStatus = 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled' | 'rejected'
+export type AdminStaff = { id: number; email: string; display_name: string; role: 'admin' | 'manager'; is_active: boolean | number; created_at: string }
 export type AdminResource = 'services' | 'faqs' | 'gallery' | 'testimonials' | 'messages' | 'customers'
 let adminCsrfToken = ''
 export async function adminLogin(email: string, password: string) {
@@ -111,13 +112,16 @@ export const saveAdminResource = (resource: AdminResource, action: 'create' | 'u
 export const getAdminSettings = () => apiRequest<Record<string, string>>('/routes/admin-settings.php')
 export const saveAdminSettings = (settings: Record<string, string>) => apiRequest<Record<string, string>>('/routes/admin-settings.php', { method: 'POST', headers: { 'X-CSRF-Token': adminCsrfToken }, body: JSON.stringify({ settings }) })
 export const getAdminExportUrl = (report: 'bookings' | 'customers' | 'analytics', days = 30) => `${apiBase}/routes/admin-export.php?report=${report}&days=${days}`
-export async function uploadAdminImage(file: File) {
-  const form = new FormData(); form.append('image', file)
+export async function uploadAdminImage(file: File, resource: string) {
+  const form = new FormData(); form.append('image', file); form.append('resource', resource)
   const response = await fetch(`${apiBase}/routes/admin-upload.php`, { method: 'POST', credentials: 'include', headers: { Accept: 'application/json', 'X-CSRF-Token': adminCsrfToken }, body: form })
   const result = await response.json().catch(() => null) as ApiEnvelope<{ url: string }> | null
   if (!response.ok || result?.status !== 'success') throw new ApiError(result?.message || `Upload failed (${response.status})`, response.status)
   return result.data as { url: string }
 }
+export const getAdminStaff = () => apiRequest<AdminStaff[]>('/routes/admin-staff.php')
+export const saveAdminStaff = (payload: { action: 'create'; name: string; email: string; password: string } | { action: 'update'; id: number; is_active: boolean }) => apiRequest<{ id: number }>('/routes/admin-staff.php', { method: 'POST', headers: { 'X-CSRF-Token': adminCsrfToken }, body: JSON.stringify(payload) })
+
 export async function adminLogout() {
   await apiRequest<{ signedOut: boolean }>('/routes/admin-session.php', { method: 'POST', headers: { 'X-CSRF-Token': adminCsrfToken } })
   adminCsrfToken = ''

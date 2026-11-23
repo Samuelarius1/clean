@@ -4,7 +4,7 @@ require_once __DIR__ . '/../middleware/admin-auth.php';
 $method = $_SERVER['REQUEST_METHOD'] ?? '';
 start_admin_session();
 if ($method === 'GET') {
-    $admin = require_admin();
+    $admin = require_staff();
     if (!isset($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     }

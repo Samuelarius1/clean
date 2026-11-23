@@ -21,7 +21,7 @@ try {
         fwrite(STDERR, "An administrator account already exists. This bootstrap is only for the first owner account.\n");
         exit(1);
     }
-    $statement = $pdo->prepare('INSERT INTO admin_users (email, display_name, password_hash) VALUES (:email, :name, :hash)');
+    $statement = $pdo->prepare('INSERT INTO admin_users (email, display_name, role, password_hash) VALUES (:email, :name, 'admin', :hash)');
     $statement->execute([
         'email' => $email,
         'name' => 'Faith’s Walk Administrator',

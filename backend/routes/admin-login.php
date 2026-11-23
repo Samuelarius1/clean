@@ -6,7 +6,7 @@ start_admin_session();
 $data = request_data();
 $email = strtolower(trim((string) ($data['email'] ?? '')));
 $password = (string) ($data['password'] ?? '');
-if ($email !== 'samuelarius437@gmail.com' || $password === '' || strlen($password) > 1024) {
+if (!filter_var($email, FILTER_VALIDATE_EMAIL) || $password === '' || strlen($password) > 1024) {
     fail_request(401, 'Email or password is incorrect.');
 }
 
@@ -18,10 +18,10 @@ try {
     if ((int) $attempts->fetchColumn() >= 6) {
         fail_request(429, 'Too many sign-in attempts. Please wait before trying again.');
     }
-    $query = $pdo->prepare('SELECT id, email, display_name, password_hash FROM admin_users WHERE email = :email LIMIT 1');
+    $query = $pdo->prepare('SELECT id, email, display_name, password_hash, role, is_active FROM admin_users WHERE email = :email LIMIT 1');
     $query->execute(['email' => $email]);
     $admin = $query->fetch();
-    $ok = $admin && password_verify($password, $admin['password_hash']);
+    $ok = $admin && (int) $admin['is_active'] === 1 && password_verify($password, $admin['password_hash']);
     $record = $pdo->prepare('INSERT INTO auth_login_attempts (subject_hash, succeeded) VALUES (:subject, :succeeded)');
     $record->execute(['subject' => $subjectHash, 'succeeded' => $ok ? 1 : 0]);
     if (!$ok) {
@@ -31,8 +31,9 @@ try {
     $_SESSION['admin_id'] = (int) $admin['id'];
     $_SESSION['admin_email'] = $admin['email'];
     $_SESSION['admin_name'] = $admin['display_name'];
+    $_SESSION['admin_role'] = $admin['role'];
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    success(['admin' => ['email' => $admin['email'], 'name' => $admin['display_name']], 'csrfToken' => $_SESSION['csrf_token']]);
+    success(['admin' => ['id' => (int) $admin['id'], 'email' => $admin['email'], 'name' => $admin['display_name'], 'role' => $admin['role']], 'csrfToken' => $_SESSION['csrf_token']]);
 } catch (Throwable $error) {
     error_log('Admin authentication failed: ' . $error->getMessage());
     fail_request(503, 'Sign-in is temporarily unavailable.');

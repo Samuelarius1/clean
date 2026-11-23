@@ -9,6 +9,7 @@ import { Footer } from './components/Footer'
 import { PageFallback } from './components/PageFallback'
 import { ConsentBanner } from './components/ConsentBanner'
 import { ScrollToTopButton } from './components/ScrollToTopButton'
+import { TeamChatPane } from './components/TeamChatPane'
 import { getPublicSettings, trackPageView } from './services/api'
 
 const HomePage = lazy(() => import('./pages/HomePage').then(module => ({ default: module.HomePage })))
@@ -27,10 +28,10 @@ const AdminPrintableReportPage = lazy(() => import('./pages/AdminPrintableReport
 const NewsletterPreferencesPage = lazy(() => import('./pages/NewsletterPreferencesPage').then(module => ({ default: module.NewsletterPreferencesPage })))
 
 export function App() {
-  const [mode, setMode] = useState<'dark' | 'light'>(() => localStorage.getItem('cleanpro-theme') === 'light' ? 'light' : 'dark')
+  const [mode, setMode] = useState<'dark' | 'light'>(() => localStorage.getItem('cleanpro-theme') === 'dark' ? 'dark' : 'light')
   const location = useLocation()
   const theme = useMemo(() => createTheme({
-    palette: { mode, primary: { main: '#E923DA' }, background: { default: mode === 'dark' ? '#052361' : '#f7f8fc', paper: mode === 'dark' ? '#101f38' : '#fff' } },
+    palette: { mode, primary: { main: '#985064' }, background: { default: mode === 'dark' ? '#111a26' : '#f5f5f2', paper: mode === 'dark' ? '#172332' : '#fff' } },
     typography: { fontFamily: 'DM Sans, sans-serif', button: { textTransform: 'none', fontWeight: 700 } },
     shape: { borderRadius: 14 },
   }), [mode])
@@ -84,6 +85,7 @@ export function App() {
           {publicSettings?.whatsapp_url ? <a className="whatsapp-float" href={publicSettings.whatsapp_url} target="_blank" rel="noreferrer" aria-label="Message Faith’s Walk CleanPro on WhatsApp"><MessageCircle size={21} /></a> : <Link className="whatsapp-float" to="/contact" aria-label="Contact Faith’s Walk CleanPro"><MessageCircle size={21} /></Link>}
         </>}
       </div>
+      <TeamChatPane mode={mode} />
     </ThemeProvider>
   )
 }

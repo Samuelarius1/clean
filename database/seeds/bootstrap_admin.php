@@ -16,15 +16,16 @@ if (!is_string($password) || strlen($password) < 12 || strlen($password) > 1024)
 
 try {
     $pdo = database();
-    $count = (int) $pdo->query('SELECT COUNT(*) FROM admin_users')->fetchColumn();
+    $count = (int) $pdo->query("SELECT COUNT(*) FROM admin_users WHERE role = 'admin'")->fetchColumn();
     if ($count > 0) {
         fwrite(STDERR, "An administrator account already exists. This bootstrap is only for the first owner account.\n");
         exit(1);
     }
-    $statement = $pdo->prepare('INSERT INTO admin_users (email, display_name, password_hash) VALUES (:email, :name, :hash)');
+    $statement = $pdo->prepare('INSERT INTO admin_users (email, display_name, role, password_hash) VALUES (:email, :name, :role, :hash)');
     $statement->execute([
         'email' => $email,
         'name' => 'Faith’s Walk Administrator',
+        'role' => 'admin',
         'hash' => password_hash($password, PASSWORD_DEFAULT),
     ]);
     fwrite(STDOUT, "Owner account created for {$email}. Remove the temporary password from the shell environment.\n");

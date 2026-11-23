@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__ . '/../middleware/admin-auth.php';
 require_method('POST');
-$admin = require_admin_csrf();
+$admin = require_admin_role_csrf('manager');
 $data = request_data();
 $id = filter_var($data['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if (!$id) fail_request(422, 'Choose a valid booking.');

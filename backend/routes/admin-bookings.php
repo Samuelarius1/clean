@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__ . '/../middleware/admin-auth.php';
 require_method('GET');
-require_admin();
+require_staff();
 try {
     $limit = filter_var($_GET['limit'] ?? 50, FILTER_VALIDATE_INT);
     $limit = min(100, max(1, $limit === false ? 50 : $limit));

@@ -3,6 +3,9 @@ declare(strict_types=1);
 require_once __DIR__ . '/../middleware/admin-auth.php';
 require_method('POST');
 $admin = require_admin_csrf();
+$resource = (string) ($_POST['resource'] ?? '');
+if (!in_array($resource, ['gallery', 'services', 'testimonials'], true)) fail_request(422, 'Choose a valid image destination.');
+if ($admin['role'] === 'manager' && $resource !== 'gallery') fail_request(403, 'Managers can upload gallery images only.');
 $file = $_FILES['image'] ?? null;
 $maxBytes = 5 * 1024 * 1024;
 if (!$file || !is_array($file) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || (int) ($file['size'] ?? 0) < 1 || (int) $file['size'] > $maxBytes || !is_uploaded_file($file['tmp_name'] ?? '')) {

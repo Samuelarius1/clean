@@ -25,6 +25,7 @@ const AdminLoginPage = lazy(() => import('./pages/AdminLoginPage').then(module =
 const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage').then(module => ({ default: module.AdminDashboardPage })))
 const AdminManagePage = lazy(() => import('./pages/AdminManagePage').then(module => ({ default: module.AdminManagePage })))
 const AdminPrintableReportPage = lazy(() => import('./pages/AdminPrintableReportPage').then(module => ({ default: module.AdminPrintableReportPage })))
+const AdminStaffPage = lazy(() => import('./pages/AdminStaffPage').then(module => ({ default: module.AdminStaffPage })))
 const NewsletterPreferencesPage = lazy(() => import('./pages/NewsletterPreferencesPage').then(module => ({ default: module.NewsletterPreferencesPage })))
 
 export function App() {
@@ -67,6 +68,7 @@ export function App() {
     <Route path="/account" element={<CustomerAccountPage />} />
     <Route path="/admin/login" element={<AdminLoginPage />} />
     <Route path="/admin/reports/print" element={<AdminPrintableReportPage />} />
+    <Route path="/admin/staff" element={<AdminStaffPage />} />
     <Route path="/admin/manage/:resource" element={<AdminManagePage />} />
     <Route path="/admin" element={<AdminDashboardPage />} />
     <Route path="*" element={<HomePage />} />

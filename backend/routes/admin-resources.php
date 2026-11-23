@@ -23,8 +23,9 @@ function audit_change(PDO $pdo, array $admin, string $action, string $type, ?int
 }
 
 if ($method === 'GET') {
-    require_admin();
+    $staff = require_staff();
     $resource = (string) ($_GET['resource'] ?? '');
+    if ($staff['role'] === 'manager' && $resource !== 'gallery') fail_request(403, 'Managers can access bookings and gallery only.');
     $sql = resource_query($resource);
     if ($sql === '') fail_request(404, 'This management section does not exist.');
     try { success(database()->query($sql)->fetchAll()); }
@@ -34,9 +35,10 @@ if ($method !== 'POST') {
     header('Allow: GET, POST, OPTIONS');
     fail_request(405, 'Method not allowed.');
 }
-$admin = require_admin_csrf();
+$admin = require_admin_role_csrf('manager');
 $data = request_data();
 $resource = (string) ($data['resource'] ?? '');
+if ($admin['role'] === 'manager' && $resource !== 'gallery') fail_request(403, 'Managers can access bookings and gallery only.');
 $action = (string) ($data['action'] ?? '');
 $allowedResources = ['services', 'faqs', 'gallery', 'testimonials', 'messages', 'customers'];
 if (!in_array($resource, $allowedResources, true)) fail_request(404, 'This management section does not exist.');

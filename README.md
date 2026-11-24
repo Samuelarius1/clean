@@ -1,6 +1,6 @@
 # Faith’s Walk CleanPro
 
-A responsive React + TypeScript + Vite website with a PHP REST API and MySQL persistence, designed for local development with XAMPP. The service catalogue, enquiries, bookings, FAQs, business contact settings, customer accounts, consent-based analytics and owner dashboard are connected to the PHP API. The initial database contains no invented services, FAQs, contact details or customer records; the preview itself does not run PHP/MySQL.
+A responsive React + TypeScript + Vite website with a PHP REST API and MySQL persistence, designed for local development with XAMPP. The service catalogue, enquiries, bookings, FAQs, business contact settings, customer accounts, consent-based analytics and owner dashboard are connected to the PHP API. The initial database contains no invented services, FAQs, contact details or customer records; the v0 preview itself does not run PHP/MySQL. XAMPP’s `localhost` API is available only to a frontend running locally on the same computer, not to the hosted v0 preview or a deployed website.
 
 ## Stack
 

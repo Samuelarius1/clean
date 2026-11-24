@@ -10,7 +10,7 @@ This project uses a Vite/React frontend and a separate PHP/MySQL JSON API. **The
 
 ## 2. Put the project under XAMPP
 
-Copy the project to `C:\xampp\htdocs\faith-cleanpro`. The API will then be available at `http://localhost/faith-cleanpro/backend`.
+Copy the project to `C:\xampp\htdocs\faith-cleanpro`. The API will then be available at `http://localhost/faith-cleanpro/backend`. This address points to the computer running the browser. A hosted v0 preview or deployed website cannot reach your computer’s local XAMPP server. To test protected admin access with XAMPP, open the frontend locally at `http://localhost:5173`; the local Vite origin is allowed by default. A remote preview or production site needs a separately hosted, reachable HTTPS PHP API.
 
 Copy `backend/config/local.example.php` to `backend/config/local.php`. Edit **only the untracked local copy** with your XAMPP database credentials and a unique application secret of at least 32 random characters. `local.php` is ignored by Git and is denied by Apache. Never add database credentials or the real application secret to a committed file. For a deployed environment, inject these values as server environment variables and set `APP_ENV` to `production`; production requires explicit database values.
 
@@ -18,14 +18,17 @@ The example uses the standard local XAMPP `root` account with an empty password.
 
 ## 3. Create and populate the database
 
-In phpMyAdmin, create a database named `faith_cleanpro` with `utf8mb4_unicode_ci`. Import the SQL files in this order:
+In phpMyAdmin, create a database named `faith_cleanpro` with `utf8mb4_unicode_ci`. Import every migration first, in order, then import the seed files:
 
 1. `database/migrations/001_core.sql`
 2. `database/migrations/002_content.sql`
 3. `database/migrations/003_visit_analytics.sql`
-4. `database/seeds/001_services.sql`
-5. `database/seeds/002_faqs.sql`
-6. `database/seeds/003_public_settings.sql`
+4. `database/migrations/004_staff_roles.sql` — required for admin/manager sessions and staff management
+5. `database/seeds/001_services.sql`
+6. `database/seeds/002_faqs.sql`
+7. `database/seeds/003_public_settings.sql`
+
+Create the owner account only after all four migrations have completed.
 
 The service and FAQ seed files intentionally add no sample records. Add the business’s actual services and answers in the owner dashboard before publishing. Public email, phone, physical address and social URLs are also blank rather than invented; add verified details in **Settings**. Only publish customer photos or testimonials after receiving permission.
 

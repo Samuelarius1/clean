@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import { motion, useReducedMotion } from 'framer-motion'
-import { ArrowRight, ArrowUpRight, Check, Sparkles } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, Check } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Reveal } from '../components/Reveal'
 import { BeforeAfterGallery } from '../components/BeforeAfterGallery'
@@ -43,7 +43,7 @@ export function HomePage() {
       <div className="hero-glow hero-glow-one" /><div className="hero-glow hero-glow-two" />
       <div className="hero-grid wrap">
         <div className="hero-copy">
-          <motion.span className="eyebrow eyebrow-pill" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}><Sparkles size={13} /> {settings?.home_hero_eyebrow || 'PROFESSIONAL CLEANING, PERSONAL CARE'}</motion.span>
+          <motion.span className="eyebrow eyebrow-pill" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>{settings?.home_hero_eyebrow || 'PROFESSIONAL CLEANING, PERSONAL CARE'}</motion.span>
           <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.08 }}>{settings?.home_hero_title || 'A cleaner space.'}<br /><em>{settings?.home_hero_accent || 'A better feeling.'}</em></motion.h1>
           <motion.p className="hero-description" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}>{settings?.home_hero_description || 'Thoughtful home and workplace cleaning, shaped around the way you live and work.'}</motion.p>
           <motion.div className="hero-actions" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}><Link to="/booking" className="button button-primary">Request a quote <ArrowRight size={16} /></Link><Link to="/services" className="button button-ghost">Explore services</Link></motion.div>
@@ -58,8 +58,6 @@ export function HomePage() {
     </section>
 
     <StatsStrip />
-
-    <section className="sponsor-strip" aria-label="Community sponsor and partner opportunities"><div className="wrap sponsor-strip-heading"><div><span className="eyebrow">COMMUNITY & PARTNERSHIPS</span><h2>Good work is better <em>together.</em></h2></div><p>We’re proud to work alongside the people and organizations who care for our community.</p></div><div className="sponsor-marquee" aria-label="Community organizations, local businesses, property teams, and residential communities"><div className="sponsor-track">{['Community organizations', 'Local businesses', 'Property teams', 'Residential communities', 'Community organizations', 'Local businesses', 'Property teams', 'Residential communities'].map((partner, index) => <span className="sponsor-wordmark" key={`${partner}-${index}`} aria-hidden={index > 3}><i aria-hidden="true" />{partner}</span>)}</div></div><div className="wrap sponsor-invite"><span>Interested in sponsoring a community clean?</span><Link to="/contact" className="text-link">Become a partner <ArrowRight size={16} /></Link></div></section>
 
     <section className="section services-section" id="services"><div className="wrap"><Reveal className="section-heading"><span className="eyebrow">OUR SERVICES</span><h2>Make room for <em>better.</em></h2><p>Tell us what your space needs. We’ll bring the care, the detail, and a fresh start.</p></Reveal><ServiceCards /><div className="section-link"><Link to="/services" className="text-link">Explore all services <ArrowRight size={16} /></Link></div></div></section>
 

@@ -32,6 +32,6 @@ export function Header({ mode, onToggleTheme }: Props) {
         <button className="icon-button menu-toggle" onClick={() => setOpen(value => !value)} aria-label={open ? 'Close navigation' : 'Open navigation'} aria-expanded={open}>{open ? <X size={20} /> : <Menu size={20} />}</button>
       </div>
     </div>
-    <AnimatePresence>{open && <motion.nav className="mobile-nav" aria-label="Mobile navigation" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.22 }}>{links.map(link => <NavLink key={link.to} to={link.to} end={link.to === '/'} onClick={() => setOpen(false)}>{link.label}</NavLink>)}<Link className="button button-primary" to="/booking" onClick={() => setOpen(false)}>Get a quote <ArrowUpRight size={16} /></Link></motion.nav>}</AnimatePresence>
+    <AnimatePresence>{open && <motion.nav className="mobile-nav" aria-label="Mobile navigation" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.22 }}>{links.map(link => <NavLink key={link.to} to={link.to} end={link.to === '/'} onClick={() => setOpen(false)}>{link.label}</NavLink>)}<Link to="/admin/login" onClick={() => setOpen(false)}>Admin</Link><Link className="button button-primary" to="/booking" onClick={() => setOpen(false)}>Get a quote <ArrowUpRight size={16} /></Link></motion.nav>}</AnimatePresence>
   </header>
 }
